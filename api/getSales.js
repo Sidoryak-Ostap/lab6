@@ -32,8 +32,8 @@ module.exports = (app) => {
                     queryDB.storeLocation = { $regex: `.*${newStoreLocation}`, $options: `i` }
                 }
 
-                if(storeLocation.includes('\\*')) {
-                    const substrings = storeLocation.split('\\*');
+                if(storeLocation.includes('\*')) {
+                    const substrings = storeLocation.split('\*');
                     console.log(substrings);
                     const begin = substrings[0];
                     const end = substrings[1];
@@ -41,14 +41,12 @@ module.exports = (app) => {
                 }
 
                 
-            } else {
-                queryDB.storeLocation = {$ne: null};
-            }
+            } 
     
     
     
             if (customer_age) {
-                const customer_age_parsed = JSON.parse(customer_age);
+                const customer_age_parsed = JSON.parse(customer_age); 
     
                 if (customer_age.split('gt').length - 1 == 2 || customer_age.split('lt').length - 1 == 2) {
                     return res.status(400).send("two equal parametrs were sent");
@@ -60,7 +58,7 @@ module.exports = (app) => {
     
                 if (customer_age_parsed.gt) {
                     customer_age_parsed['$gt'] = customer_age_parsed['gt'];
-                    delete customer_age_parsed['gt'];
+                    delete customer_age_parsed['gt']; 
                 }
     
                 if (customer_age_parsed.lt) {
@@ -86,25 +84,23 @@ module.exports = (app) => {
                 console.log(arrayOfTags);
     
                 queryDB["items.tags"] = {$in: arrayOfTags};
-            } else {
-                queryDB["items.tags"] = {$ne: null};
-            }
+            } 
     
             if (couponUsed) {
                 queryDB.couponUsed = couponUsed;
-            } else {
-                queryDB.couponUsed = {$ne: null};
-            }
+            } 
 
             console.log(queryDB);
     
-            const doc = await SaleModel.find({
+            const doc = await SaleModel.find(
+                {
                 storeLocation: queryDB.storeLocation, // done
                 ["customer.age"]: queryDB['customer.age'],  //done 
                 ["customer.email"]: queryDB['customer.email'], //done
                 ["items.tags"]: queryDB['items.tags'],
                 couponUsed: queryDB.couponUsed  // done
-            })
+                }
+            )
 
             console.log(doc);
     
